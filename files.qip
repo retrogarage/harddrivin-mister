@@ -1,0 +1,133 @@
+set root [file dirname [file normalize [info script]]]
+
+# MiSTer framework. This is the template's sys.qip with the core-owned PLL
+# entry omitted and all paths anchored to the vendored source.
+set mister_sys [file join $root sys]
+set_global_assignment -name QIP_FILE           [file join $mister_sys pll_hdmi.qip]
+set_global_assignment -name QIP_FILE           [file join $mister_sys pll_audio.qip]
+set_global_assignment -name QIP_FILE           [file join $mister_sys pll_cfg.qip]
+set_global_assignment -name VERILOG_FILE       [file join $mister_sys sys_top.v]
+set_global_assignment -name SDC_FILE           [file join $mister_sys sys_top.sdc]
+set_global_assignment -name VHDL_FILE          [file join $root sys ascal.vhd]
+set_global_assignment -name VHDL_FILE          [file join $mister_sys pll_hdmi_adj.vhd]
+set_global_assignment -name SYSTEMVERILOG_FILE [file join $mister_sys math.sv]
+set_global_assignment -name SYSTEMVERILOG_FILE [file join $mister_sys hq2x.sv]
+set_global_assignment -name VERILOG_FILE       [file join $mister_sys scandoubler.v]
+set_global_assignment -name VERILOG_FILE       [file join $mister_sys scanlines.v]
+set_global_assignment -name SYSTEMVERILOG_FILE [file join $mister_sys shadowmask.sv]
+set_global_assignment -name SYSTEMVERILOG_FILE [file join $mister_sys video_cleaner.sv]
+set_global_assignment -name SYSTEMVERILOG_FILE [file join $mister_sys gamma_corr.sv]
+set_global_assignment -name SYSTEMVERILOG_FILE [file join $mister_sys video_mixer.sv]
+set_global_assignment -name SYSTEMVERILOG_FILE [file join $mister_sys video_freak.sv]
+set_global_assignment -name SYSTEMVERILOG_FILE [file join $mister_sys video_freezer.sv]
+set_global_assignment -name VERILOG_FILE       [file join $mister_sys arcade_video.v]
+set_global_assignment -name VERILOG_FILE       [file join $mister_sys osd.v]
+set_global_assignment -name SYSTEMVERILOG_FILE [file join $mister_sys vga_out.sv]
+set_global_assignment -name SYSTEMVERILOG_FILE [file join $mister_sys yc_out.sv]
+set_global_assignment -name VERILOG_FILE       [file join $mister_sys i2c.v]
+set_global_assignment -name SYSTEMVERILOG_FILE [file join $mister_sys alsa.sv]
+set_global_assignment -name VERILOG_FILE       [file join $mister_sys i2s.v]
+set_global_assignment -name VERILOG_FILE       [file join $mister_sys spdif.v]
+set_global_assignment -name SYSTEMVERILOG_FILE [file join $mister_sys audio_out.sv]
+set_global_assignment -name VERILOG_FILE       [file join $mister_sys iir_filter.v]
+set_global_assignment -name SYSTEMVERILOG_FILE [file join $mister_sys ltc2308.sv]
+set_global_assignment -name VERILOG_FILE       [file join $mister_sys sigma_delta_dac.v]
+set_global_assignment -name SYSTEMVERILOG_FILE [file join $mister_sys mt32pi.sv]
+set_global_assignment -name SYSTEMVERILOG_FILE [file join $mister_sys mcp23009.sv]
+set_global_assignment -name SYSTEMVERILOG_FILE [file join $mister_sys f2sdram_safe_terminator.sv]
+set_global_assignment -name SYSTEMVERILOG_FILE [file join $mister_sys ddr_svc.sv]
+set_global_assignment -name SYSTEMVERILOG_FILE [file join $mister_sys sysmem.sv]
+set_global_assignment -name SYSTEMVERILOG_FILE [file join $mister_sys sd_card.sv]
+set_global_assignment -name SYSTEMVERILOG_FILE [file join $mister_sys hps_io.sv]
+set_global_assignment -name SOURCE_FILE        [file join $mister_sys emu_ports.vh]
+
+# TMS34010 reusable functional-system boundary.
+set tms [file join $root rtl tms34010]
+set_global_assignment -name SEARCH_PATH $tms
+set_global_assignment -name SYSTEMVERILOG_FILE [file join $tms tms34010_pkg.sv]
+foreach f {
+  cdc/tms34010_cdc_mailbox.sv
+  cdc/tms34010_screen_cdc.sv
+  cdc/tms34010_sync_bit.sv
+  core/tms34010_alu.sv
+  core/tms34010_decode.sv
+  core/tms34010_divider.sv
+  core/tms34010_int_ctrl.sv
+  core/tms34010_pc.sv
+  core/tms34010_regfile.sv
+  core/tms34010_shifter.sv
+  core/tms34010_status_reg.sv
+  host/tms34010_host_bus.sv
+  memory/tms34010_bus_arbiter.sv
+  memory/tms34010_field_sequencer.sv
+  memory/tms34010_memory_fabric.sv
+  video/tms34010_display_addr.sv
+  video/tms34010_refresh.sv
+  video/tms34010_video.sv
+  video/tms34010_video_subsystem.sv
+  tms34010_system.sv
+} {
+  set_global_assignment -name SYSTEMVERILOG_FILE [file join $tms $f]
+}
+
+# Main 68010 (TG68K) and sound-board 68000 (FX68K).
+set tg [file join $root rtl tg68k]
+set_global_assignment -name VHDL_FILE [file join $tg TG68K_Pack.vhd]
+set_global_assignment -name VHDL_FILE [file join $root rtl tg68k TG68K_ALU.vhd]
+set_global_assignment -name VHDL_FILE [file join $tg TG68KdotC_Kernel.vhd]
+
+set fx [file join $root rtl fx68k]
+set_global_assignment -name SEARCH_PATH $fx
+set_global_assignment -name SYSTEMVERILOG_FILE [file join $fx fx68k.sv]
+set_global_assignment -name SYSTEMVERILOG_FILE [file join $fx fx68kAlu.sv]
+set_global_assignment -name SYSTEMVERILOG_FILE [file join $fx uaddrPla.sv]
+set_global_assignment -name SDC_FILE           [file join $fx fx68k.sdc]
+
+# TMS32010 sound DSP and proven MiSTer SDRAM controller.
+set ika [file join $root rtl ika32010]
+set_global_assignment -name SEARCH_PATH $ika
+set_global_assignment -name SYSTEMVERILOG_FILE [file join $root rtl ika32010 IKA32010.sv]
+set_global_assignment -name SYSTEMVERILOG_FILE [file join $root rtl sdram.sv]
+
+# Board integration and top.
+foreach f {
+  rtl/harddrivin_pll.sv
+  rtl/compact_video_timing.sv
+  rtl/compact_gsp_vram.sv
+  rtl/compact_sdram_burst.sv
+  rtl/compact_vram_arbiter.sv
+  rtl/compact_vram_burst_arbiter.sv
+  rtl/compact_vram_traffic.sv
+  rtl/harddrivin_ddr_rom.sv
+  rtl/harddrivin_ddr_arbiter.sv
+  rtl/harddrivin_lane_ram.sv
+  rtl/harddrivin_word_ram.sv
+  rtl/harddrivin_dual_port_word_ram.sv
+  rtl/harddrivin_dual_clock_word_ram.sv
+  rtl/harddrivin_host_cdc.sv
+  rtl/harddrivin_tms_word_cdc.sv
+  rtl/harddrivin_steering.sv
+  rtl/harddrivin_gearbox.sv
+  rtl/harddrivin_nvram_bridge.sv
+  rtl/harddrivin_cockpit_expander.sv
+  rtl/harddrivin_gsp_memory.sv
+  rtl/harddrivin_compact_scanout.sv
+  rtl/harddrivin_msp_memory.sv
+  rtl/harddrivin_main_bus.sv
+  rtl/harddrivin_sound_board.sv
+  rtl/adsp2100_budget_model.sv
+  rtl/adsp2100_program_ram.sv
+  rtl/adsp2100_core.sv
+  rtl/harddrivin_true_dual_port_ram.sv
+  rtl/harddrivin_adsp_board.sv
+  rtl/harddrivin_milestone.sv
+  HardDrivin.sv
+} {
+  set_global_assignment -name SYSTEMVERILOG_FILE [file join $root $f]
+}
+set_global_assignment -name SDC_FILE [file join $root HardDrivin.sdc]
+
+set_global_assignment -name SYSTEMVERILOG_FILE [file join $root rtl tms34010 core tms34010_core.sv]
+
+set_global_assignment -name SYSTEMVERILOG_FILE [file join $root rtl tms34010 io tms34010_io_regs.sv]
+set_global_assignment -name SYSTEMVERILOG_FILE [file join $root rtl tms34010 host tms34010_host_if.sv]

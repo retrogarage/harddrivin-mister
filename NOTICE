@@ -1,0 +1,40 @@
+Hard Drivin' for MiSTer
+
+Project integration is distributed under GPL-3.0-or-later; see LICENSE.
+Third-party code retains its original notices and licenses.
+
+sys
+  Upstream: https://github.com/MiSTer-devel/Template_MiSTer
+  Base revision: 3ea1134cf05d62c2b1db30362277a823d739ced2
+
+rtl/tms34010
+  Upstream: https://github.com/birdybro/TMS34010_sv
+  Base revision: 94a258e80a07ceb4303ce0b99818df832e96007f
+
+rtl/tg68k
+  Upstream: https://github.com/TobiFlex/TG68K.C
+  Base revision: ade33e396a1e647c2de9daf71ff9d5b3979639b2
+
+rtl/ika32010
+  Upstream: https://github.com/ika-musume/IKA32010
+  Base revision: 51bc1f05a2a08a61c8815a9643d08a42e99779c6
+
+rtl/fx68k
+  Upstream: https://github.com/MiSTer-devel/AtariST_MiSTer
+  Base revision: 426ef8765fc16cb547e7ff5deb7d9be61003b36d
+
+rtl/sdram.sv
+  Upstream: https://github.com/MiSTer-devel/AliceMC10_MiSTer
+  Base revision: b94754d7e49011c4216980b16ca0f3fc3b628e6c
+
+Local integration changes include GSP cached instruction fetch and pixel-operation timing,
+TG68K barrel-count timing, MiSTer scaler divider pipelining, and disabling the
+IKA32010 simulation disassembler for synthesis. The vendored files contain the
+actual release sources, including local dependency changes.
+
+MiSTer framework and SDRAM: GPL-2.0 / GPL-2.0-or-later per file.
+TMS34010: MIT. TG68K: LGPL-3.0-or-later. FX68K: GPL-3.0.
+IKA32010: BSD-2-Clause. See the respective component LICENSE files.
+
+Game software and trademarks belong to their respective owners.
+Game ROM archives and personal calibration files are not included.
